@@ -8,8 +8,10 @@ const ironApp = {
     ctx: undefined,
     gameSize: { w: undefined, h: undefined },
     framesIndex: 0,
-    enemyRight: [],
-    enemyLeft: [],
+    enemyArray: [],
+    // enemyRight: [],
+    // enemyLeft: [],
+
 
     init(canvasID) {
         this.canvasNode = document.querySelector(`#${canvasID}`)
@@ -58,7 +60,11 @@ const ironApp = {
         setInterval(() => {
             this.clearAll()
             this.drawAll()
-            this.generateEnemyRight()
+            // this.generateEnemyRight()
+            this.generateEnemy()
+
+            console.log(this.enemyArray)
+
             this.framesIndex++
         }, 30);
     },
@@ -70,7 +76,7 @@ const ironApp = {
     drawAll() {
         this.drawBackground()
         this.player.draw()
-        this.enemyRight.forEach(enemyR => enemyR.draw())
+        this.enemyArray.forEach(enemy => enemy.draw())
     },
 
     drawBackground() {
@@ -86,9 +92,14 @@ const ironApp = {
         this.player.draw()
     },
 
-    generateEnemyRight() {
-        if (this.framesIndex % 600 === 0) {
-            this.enemyRight.push(new EnemyRight(this.ctx, this.gameSize.w, 50))
+    generateEnemy() {
+        if (this.framesIndex % 3 === 0) {
+            this.enemyArray.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
         }
     }
 }
+// generateEnemyRight() {
+    //     if (this.framesIndex % 150 === 0) {
+    //         this.enemyRight.push(new EnemyRight(this.ctx, this.gameSize.w, 50, this.gameSize.w, this.gameSize.h))
+    //     }
+    // }

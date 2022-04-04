@@ -19,18 +19,18 @@ class Player {
     }
 
     moveLeft() {
-        this.playerPos.x -= 20
+        this.playerPos.x -= 50
     }
 
     moveRight() {
-        this.playerPos.x += 20
+        this.playerPos.x += 50
     }
 
     moveUp() {
-        this.playerPos.y -= 20
+        this.playerPos.y -= 50
     }
 
     moveDown() {
-        this.playerPos.y += 20
+        this.playerPos.y += 50
     }
 }
