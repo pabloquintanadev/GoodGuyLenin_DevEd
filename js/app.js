@@ -9,6 +9,8 @@ const ironApp = {
     gameSize: { w: undefined, h: undefined },
     framesIndex: 0,
     enemyArray: [],
+    shootBonusArr: [],
+    clearBonusArr: [],
     // enemyRight: [],
     // enemyLeft: [],
 
@@ -62,6 +64,8 @@ const ironApp = {
             this.drawAll()
             // this.generateEnemyRight()
             this.generateEnemy()
+            this.generateBonus()
+
 
             console.log(this.enemyArray)
 
@@ -77,6 +81,8 @@ const ironApp = {
         this.drawBackground()
         this.player.draw()
         this.enemyArray.forEach(enemy => enemy.draw())
+        this.shootBonusArr.forEach(bonus => bonus.draw());
+        this.clearBonusArr.forEach(bonus => bonus.draw())
     },
 
     drawBackground() {
@@ -93,8 +99,29 @@ const ironApp = {
     },
 
     generateEnemy() {
-        if (this.framesIndex % 3 === 0) {
+        if (this.framesIndex % 5 === 0) {
             this.enemyArray.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
+        }
+    },
+    // generateShootBonus() {
+    //     if (this.framesIndex % 300 === 0) {
+    //         this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
+    //     }
+    // },
+    // generateClearBonus() {
+    //     if (this.framesIndex % 300 === 0) {
+    //         this.clearBonusArr.push(new ClearBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
+    //     }
+    // }
+
+    generateBonus() {
+        if (this.framesIndex % 30000 === 0) {
+            if (Math.floor(Math.random()) * 1 < 1)
+                this.clearBonusArr.push(new ClearBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
+            console.log('if')
+        } else {
+            this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
+            console.log('else')
         }
     }
 }
