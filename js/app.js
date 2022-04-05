@@ -1,6 +1,6 @@
 const ironApp = {
-    name: 'Iron App',
-    description: '---',
+    name: 'Good guy Lenin',
+    description: '{dev-edition}',
     version: '1.0.0',
     author: 'Pablo & Roberto',
     license: undefined,
