@@ -8,10 +8,11 @@ const ironApp = {
     ctx: undefined,
     gameSize: { w: undefined, h: undefined },
     framesIndex: 0,
-    enemyArray: [],
+    enemyArr: [],
     shootBonusArr: [],
     clearBonusArr: [],
     bulletsArr: [],
+    canShoot: false,
     // enemyRight: [],
     // enemyLeft: [],
 
@@ -52,8 +53,7 @@ const ironApp = {
             }
             if (key === 'ArrowDown' && this.player.playerPos.y < this.gameSize.h - 120 - this.player.playerSize.h) {
                 this.player.moveDown()
-            }
-            if (event.code === 'Space') {
+            } if (event.code === 'Space') {
                 this.shoot()
 
             }
@@ -61,7 +61,7 @@ const ironApp = {
     },
 
     start() {
-        setInterval(() => {
+        this.interval = setInterval(() => {
             this.clearAll()
             this.drawAll()
             // this.generateEnemyRight()
@@ -70,8 +70,7 @@ const ironApp = {
             this.generateClearBonus()
 
 
-            console.log(this.enemyArray)
-            console.log(this.bulletsArr)
+            console.log(this.canShoot)
 
             this.framesIndex++
         }, 30);
@@ -81,15 +80,60 @@ const ironApp = {
         this.ctx.clearRect(0, 0, this.gameSize.w, this.gameSize.h)
     },
 
+
     drawAll() {
         this.drawBackground()
         this.player.draw()
-        this.enemyArray.forEach(enemy => enemy.draw())
+
         this.shootBonusArr.forEach(bonus => bonus.draw());
         this.clearBonusArr.forEach(bonus => bonus.draw())
+        this.enemyArr.forEach(enemy => enemy.draw())
         this.bulletsArr.forEach(bullet => { bullet.draw() });
         this.clearEnemies()
         this.clearBullets()
+
+        this.enemyArr.forEach(enemy => {
+            if (this.player.playerPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
+                this.player.playerPos.x + this.player.playerSize.w > enemy.enemyPos.x &&
+                this.player.playerPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
+                this.player.playerSize.h + this.player.playerPos.y > enemy.enemyPos.y) {
+                this.playerEnemyCollision()
+            }
+        });
+
+        this.clearBonusArr.forEach(clearBonus => {
+            if (this.player.playerPos.x < clearBonus.clearBonusPos.x + clearBonus.clearBonusSize.w &&
+                this.player.playerPos.x + this.player.playerSize.w > clearBonus.clearBonusPos.x &&
+                this.player.playerPos.y < clearBonus.clearBonusPos.y + clearBonus.clearBonusSize.h &&
+                this.player.playerSize.h + this.player.playerPos.y > clearBonus.clearBonusPos.y) {
+                this.playerClearBonusCollision()
+            }
+        });
+
+        this.shootBonusArr.forEach(shootBonus => {
+            if (this.player.playerPos.x < shootBonus.shootBonusPos.x + shootBonus.shootBonusSize.w &&
+                this.player.playerPos.x + this.player.playerSize.w > shootBonus.shootBonusPos.x &&
+                this.player.playerPos.y < shootBonus.shootBonusPos.y + shootBonus.shootBonusSize.h &&
+                this.player.playerSize.h + this.player.playerPos.y > shootBonus.shootBonusPos.y) {
+                // this.canShoot = true
+                this.playerShootBonusCollision()
+
+            }
+        })
+
+        this.enemyArr.forEach(enemy => {
+            this.bulletsArr.forEach(bullet => {
+                if (bullet.bulletPos.x < enemy.enemyPos.x + enemy.enemySize.w &&
+                    bullet.bulletPos.x + bullet.bulletSize.w > enemy.enemyPos.x &&
+                    bullet.bulletPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
+                    bullet.bulletSize.h + bullet.bulletPos.y > enemy.enemyPos.y) {
+                    this.enemyArr.splice(this.enemyArr.indexOf(enemy), 1)
+                    this.bulletsArr.splice(this.bulletsArr.indexOf(bullet), 1)
+                }
+            });
+        });
+
+
     },
 
     drawBackground() {
@@ -106,12 +150,12 @@ const ironApp = {
 
     generateEnemy() {
         if (this.framesIndex % 10 === 0) {
-            this.enemyArray.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
+            this.enemyArr.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
         }
     },
 
     clearEnemies() {
-        this.enemyArray = this.enemyArray.filter(enemy => enemy.enemyPos.y < this.gameSize.h)
+        this.enemyArr = this.enemyArr.filter(enemy => enemy.enemyPos.y < this.gameSize.h)
     },
 
     clearBullets() {
@@ -131,25 +175,43 @@ const ironApp = {
     },
 
     shoot() {
-        this.bulletsArr.push(new Bullet(this.ctx, this.player.playerPos.x, this.player.playerPos.y, 50, 50))
+        if (this.canShoot) {
+
+            this.bulletsArr.push(new Bullet(this.ctx, this.player.playerPos.x, this.player.playerPos.y, 50, 50))
+        }
+    },
+
+    playerEnemyCollision() {
+        console.log('colisión player enemy')
+        this.gameOver()
+    },
+
+    playerClearBonusCollision() {
+        this.ctx.fillStyle = 'red'
+        this.ctx.fillRect(0, 0, 500, 500)
+        this.enemyArr.splice(0, this.enemyArr.length)
+        this.clearBonusArr.splice(0, this.clearBonusArr.length)
+    },
+
+    playerShootBonusCollision() {
+        this.ctx.fillStyle = 'blue'
+        this.ctx.fillRect(0, 0, 500, 500)
+        this.canShoot = true
+        this.shootBonusArr.splice(0, this.shootBonusArr.length)
+        window.setTimeout(() => {
+            this.canShoot = false
+            console.log('EAAAAAA TIEOUT')
+        }, 2000);
+    },
+
+    bulletEnemyCollision() {
+        console.log('BOSFUGJAOJFGHEAGHIQGAHELSHA')
+
+    },
+
+    gameOver() {
+        clearInterval(this.interval)
     }
-
-    // generateBonus() {
-    //     if (this.framesIndex % 30000 === 0) {
-    //         if (Math.floor(Math.random()) * 1 < 1)
-    //             this.clearBonusArr.push(new ClearBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
-    //         console.log('if')
-    //     } else {
-    //         this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 280) + 280))
-    //         console.log('else')
-    //     }
-    // }
-
-    // generateEnemyRight() {
-    //     if (this.framesIndex % 150 === 0) {
-    //         this.enemyRight.push(new EnemyRight(this.ctx, this.gameSize.w, 50, this.gameSize.w, this.gameSize.h))
-    //     }
-    // }
 
 
 

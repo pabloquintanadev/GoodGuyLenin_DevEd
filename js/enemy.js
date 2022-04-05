@@ -30,6 +30,6 @@ class Enemy {
     }
 
     moveDown() {
-        this.enemyPos.y += 20
+        this.enemyPos.y += 5
     }
 }
