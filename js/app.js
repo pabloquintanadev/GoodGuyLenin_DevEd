@@ -14,8 +14,9 @@ const ironApp = {
     bulletsArr: [],
     canShoot: false,
     nextLevelText: false,
-    enemyGenerateSpeed: 10,
+    enemyGenerateSpeed: undefined,
     onPlaying: false,
+    musicOnPlay: false,
 
 
 
@@ -30,6 +31,7 @@ const ironApp = {
         this.createPlayer()
         this.setEventListeners()
         this.gameStart()
+
     },
 
     setDimensions() {
@@ -58,13 +60,22 @@ const ironApp = {
             } if (event.code === 'Space') {
                 this.shoot()
             } if (event.code === 'Enter') {
-                if (this.onPlaying === false) { this.reset() }
+                if (this.onPlaying === false) {
+                    this.reset()
+                    if (!this.musicOnPlay) {
+                        let backgroundMusic = new Audio("./sounds/La cumbia de los Avengers - Cumbia Drive.mp3")
+                        backgroundMusic.play()
+                        this.musicOnPlay = true
+
+                    }
+                }
             }
 
         })
     },
     start() {
         this.onPlaying = true
+        this.enemyGenerateSpeed = 10
 
         this.interval = setInterval(() => {
             this.clearAll()
@@ -77,11 +88,11 @@ const ironApp = {
     },
 
     reset() {
-        // this.clearAll()
         this.enemyArr.splice(0, this.enemyArr.length)
         this.shootBonusArr.splice(0, this.shootBonusArr.length)
         this.clearBonusArr.splice(0, this.clearBonusArr.length)
         this.framesIndex = 0
+
         this.start()
 
     },
@@ -233,11 +244,15 @@ const ironApp = {
     playerClearBonusCollision() {
         this.enemyArr.splice(0, this.enemyArr.length)
         this.clearBonusArr.splice(0, this.clearBonusArr.length)
+        let clearBonusMusic = new Audio("./sounds/Soy yo, Concha. Entro.mp3")
+        clearBonusMusic.play()
     },
 
     playerShootBonusCollision() {
         this.canShoot = true
         this.shootBonusArr.splice(0, this.shootBonusArr.length)
+        let shootBonusMusic = new Audio("./sounds/My name is Jeff.mp3")
+        shootBonusMusic.play()
         window.setTimeout(() => {
             this.canShoot = false
 
@@ -245,22 +260,18 @@ const ironApp = {
     },
 
     gameStart() {
-        this.ctx.drawImage(this.imageInstanceGameStart, 300, 230, this.gameSize.w, this.gameSize.h)
         clearInterval(this.interval)
         this.onPlaying = false
-        console.log('STARTTTT')
+
     },
 
     gameOver() {
-        this.ctx.drawImage(this.imageInstanceGameOver, 300, 230, this.gameSize.w, this.gameSize.h)
+        this.ctx.drawImage(this.imageInstanceGameOver, 0, 0, this.gameSize.w, this.gameSize.h)
         clearInterval(this.interval)
         this.onPlaying = false
     },
 
     loadImages() {
-        this.imageInstanceGameStart = new Image()
-        this.imageInstanceGameStart.src = './img/game_over_2.jpeg'
-        console.log("imagen")
         this.imageInstanceGameOver = new Image()
         this.imageInstanceGameOver.src = './img/game_over.jpg'
     }
