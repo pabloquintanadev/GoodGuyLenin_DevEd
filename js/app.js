@@ -14,6 +14,7 @@ const ironApp = {
     bulletsArr: [],
     canShoot: false,
     nextLevelText: false,
+    enemyGenerateSpeed: 100,
 
 
     init(canvasID) {
@@ -78,14 +79,14 @@ const ironApp = {
         this.ctx.clearRect(0, 0, this.gameSize.w, this.gameSize.h)
     },
 
-
     drawAll() {
         this.drawBackground()
         this.player.draw()
         this.pointsCounter(this.framesIndex)
         this.displayNextLevelText()
-        if (this.framesIndex % 1000 === 0 && this.framesIndex !== 0) {
+        if (this.framesIndex % 100 === 0 && this.framesIndex !== 0) {
             this.nextLevel()
+            this.enemyGenerateSpeed /= 5
         }
 
         this.shootBonusArr.forEach(bonus => bonus.draw());
@@ -177,7 +178,7 @@ const ironApp = {
     },
 
     generateEnemy() {
-        if (this.framesIndex % 1000 === 0) {
+        if (this.framesIndex % this.enemyGenerateSpeed === 0) {
             this.enemyArr.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
         }
     },
