@@ -15,19 +15,21 @@ const ironApp = {
     canShoot: false,
     nextLevelText: false,
     enemyGenerateSpeed: 10,
+    onPlaying: false,
+
 
 
     init(canvasID) {
         this.canvasNode = document.querySelector(`#${canvasID}`)
         this.ctx = this.canvasNode.getContext('2d')
-        console.log('EL CONTEXTO:', this.ctx)
-
+        this.loadImages()
         this.setDimensions()
         this.drawBackground()
+        this.clearAll()
         this.start()
         this.createPlayer()
         this.setEventListeners()
-
+        this.gameStart()
     },
 
     setDimensions() {
@@ -42,7 +44,7 @@ const ironApp = {
     setEventListeners() {
         document.addEventListener('keydown', event => {
             const { key } = event
-            if (key === 'ArrowLeft' && this.player.playerPos.x > 150) {
+            if (key === 'ArrowLeft' && (this.player.playerPos.x > 200 || this.player.playerPos.y <= 200)) {
                 this.player.moveLeft()
             }
             if (key === 'ArrowRight' && this.player.playerPos.x < this.gameSize.w - 250 - this.player.playerSize.w) {
@@ -55,24 +57,33 @@ const ironApp = {
                 this.player.moveDown()
             } if (event.code === 'Space') {
                 this.shoot()
-
+            } if (event.code === 'Enter') {
+                if (this.onPlaying === false) { this.reset() }
             }
+
         })
     },
-
     start() {
+        this.onPlaying = true
+
         this.interval = setInterval(() => {
             this.clearAll()
             this.drawAll()
             this.generateEnemy()
             this.generateShootBonus()
             this.generateClearBonus()
-
-
-            console.log(this.nextLevelText)
-
             this.framesIndex++
         }, 30);
+    },
+
+    reset() {
+        // this.clearAll()
+        this.enemyArr.splice(0, this.enemyArr.length)
+        this.shootBonusArr.splice(0, this.shootBonusArr.length)
+        this.clearBonusArr.splice(0, this.clearBonusArr.length)
+        this.framesIndex = 0
+        this.start()
+
     },
 
     clearAll() {
@@ -101,7 +112,10 @@ const ironApp = {
                 this.player.playerPos.x + this.player.playerSize.w > enemy.enemyPos.x &&
                 this.player.playerPos.y < enemy.enemyPos.y + enemy.enemySize.h &&
                 this.player.playerSize.h + this.player.playerPos.y > enemy.enemyPos.y) {
+
                 this.playerEnemyCollision()
+
+
             }
         });
 
@@ -140,6 +154,8 @@ const ironApp = {
     },
 
     drawBackground() {
+        this.ctx.fillStyle = 'grey'
+        this.ctx.fillRect(0, 0, this.gameSize.w, this.gameSize.h)
         this.ctx.fillStyle = 'blue'
         this.ctx.fillRect(0, 0, 200, this.gameSize.h)
         this.ctx.fillRect(this.gameSize.w - 200, 0, 200, this.gameSize.h)
@@ -211,18 +227,15 @@ const ironApp = {
     },
 
     playerEnemyCollision() {
-        console.log('colisión player enemy')
         this.gameOver()
     },
 
     playerClearBonusCollision() {
-        this.ctx.fillRect(0, 0, 500, 500)
         this.enemyArr.splice(0, this.enemyArr.length)
         this.clearBonusArr.splice(0, this.clearBonusArr.length)
     },
 
     playerShootBonusCollision() {
-        this.ctx.fillRect(0, 0, 500, 500)
         this.canShoot = true
         this.shootBonusArr.splice(0, this.shootBonusArr.length)
         window.setTimeout(() => {
@@ -231,7 +244,24 @@ const ironApp = {
         }, 2000);
     },
 
-    gameOver() {
+    gameStart() {
+        this.ctx.drawImage(this.imageInstanceGameStart, 300, 230, this.gameSize.w, this.gameSize.h)
         clearInterval(this.interval)
+        this.onPlaying = false
+        console.log('STARTTTT')
+    },
+
+    gameOver() {
+        this.ctx.drawImage(this.imageInstanceGameOver, 300, 230, this.gameSize.w, this.gameSize.h)
+        clearInterval(this.interval)
+        this.onPlaying = false
+    },
+
+    loadImages() {
+        this.imageInstanceGameStart = new Image()
+        this.imageInstanceGameStart.src = './img/game_over_2.jpeg'
+        console.log("imagen")
+        this.imageInstanceGameOver = new Image()
+        this.imageInstanceGameOver.src = './img/game_over.jpg'
     }
 }
