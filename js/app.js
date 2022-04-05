@@ -13,8 +13,7 @@ const ironApp = {
     clearBonusArr: [],
     bulletsArr: [],
     canShoot: false,
-    // enemyRight: [],
-    // enemyLeft: [],
+    nextLevelText: false,
 
 
     init(canvasID) {
@@ -64,13 +63,12 @@ const ironApp = {
         this.interval = setInterval(() => {
             this.clearAll()
             this.drawAll()
-            // this.generateEnemyRight()
             this.generateEnemy()
             this.generateShootBonus()
             this.generateClearBonus()
 
 
-            console.log(this.canShoot)
+            console.log(this.nextLevelText)
 
             this.framesIndex++
         }, 30);
@@ -84,6 +82,11 @@ const ironApp = {
     drawAll() {
         this.drawBackground()
         this.player.draw()
+        this.pointsCounter(this.framesIndex)
+        this.displayNextLevelText()
+        if (this.framesIndex % 1000 === 0) {
+            this.nextLevel()
+        }
 
         this.shootBonusArr.forEach(bonus => bonus.draw());
         this.clearBonusArr.forEach(bonus => bonus.draw())
@@ -115,7 +118,6 @@ const ironApp = {
                 this.player.playerPos.x + this.player.playerSize.w > shootBonus.shootBonusPos.x &&
                 this.player.playerPos.y < shootBonus.shootBonusPos.y + shootBonus.shootBonusSize.h &&
                 this.player.playerSize.h + this.player.playerPos.y > shootBonus.shootBonusPos.y) {
-                // this.canShoot = true
                 this.playerShootBonusCollision()
 
             }
@@ -143,13 +145,39 @@ const ironApp = {
 
     },
 
+    pointsCounter(counter) {
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '20px arial'
+        this.ctx.fillText("Your score", 40, 45)
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '50px arial'
+        this.ctx.fillText(counter, 50, 95)
+    },
+
+    nextLevel() {
+        this.nextLevelText = true
+        window.setTimeout(() => {
+            this.nextLevelText = false
+
+        }, 1000);
+    },
+
+    displayNextLevelText() {
+        if (this.nextLevelText === true) {
+            this.ctx.fillStyle = 'white'
+            this.ctx.font = '100px arial'
+            this.ctx.fillText('NEXT LEVEL', this.gameSize.w / 2 - 250, this.gameSize.h / 2)
+
+        }
+    },
+
     createPlayer() {
         this.player = new Player(this.ctx, this.gameSize.w / 2 - 40, this.gameSize.h / 2 - 40, 80, 80)
         this.player.draw()
     },
 
     generateEnemy() {
-        if (this.framesIndex % 10 === 0) {
+        if (this.framesIndex % 1000 === 0) {
             this.enemyArr.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
         }
     },
@@ -165,7 +193,7 @@ const ironApp = {
 
     generateShootBonus() {
         if (this.framesIndex % 123 === 0) {
-            this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 400) + 400))
+            this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 600) + 400))
         }
     },
     generateClearBonus() {
@@ -200,19 +228,11 @@ const ironApp = {
         this.shootBonusArr.splice(0, this.shootBonusArr.length)
         window.setTimeout(() => {
             this.canShoot = false
-            console.log('EAAAAAA TIEOUT')
+
         }, 2000);
-    },
-
-    bulletEnemyCollision() {
-        console.log('BOSFUGJAOJFGHEAGHIQGAHELSHA')
-
     },
 
     gameOver() {
         clearInterval(this.interval)
     }
-
-
-
 }
