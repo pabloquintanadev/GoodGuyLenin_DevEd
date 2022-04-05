@@ -84,7 +84,7 @@ const ironApp = {
         this.player.draw()
         this.pointsCounter(this.framesIndex)
         this.displayNextLevelText()
-        if (this.framesIndex % 1000 === 0) {
+        if (this.framesIndex % 1000 === 0 && this.framesIndex !== 0) {
             this.nextLevel()
         }
 
