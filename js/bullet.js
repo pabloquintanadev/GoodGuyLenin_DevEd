@@ -11,7 +11,7 @@ class Bullet {
 
     init() {
         this.imageInstance = new Image()
-        this.imageInstance.src = './img/transparent-pile-of-poo-emoji-emoji-icon-smiley-defecation-60d30bda7b8f59.5151467416244438665061.jpg'
+        this.imageInstance.src = './img/shit.jpg'
     }
 
     draw() {

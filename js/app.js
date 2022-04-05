@@ -14,7 +14,7 @@ const ironApp = {
     bulletsArr: [],
     canShoot: false,
     nextLevelText: false,
-    enemyGenerateSpeed: 100,
+    enemyGenerateSpeed: 10,
 
 
     init(canvasID) {
@@ -42,7 +42,7 @@ const ironApp = {
     setEventListeners() {
         document.addEventListener('keydown', event => {
             const { key } = event
-            if (key === 'ArrowLeft' && this.player.playerPos.x > 250) {
+            if (key === 'ArrowLeft' && this.player.playerPos.x > 150) {
                 this.player.moveLeft()
             }
             if (key === 'ArrowRight' && this.player.playerPos.x < this.gameSize.w - 250 - this.player.playerSize.w) {
@@ -84,9 +84,9 @@ const ironApp = {
         this.player.draw()
         this.pointsCounter(this.framesIndex)
         this.displayNextLevelText()
-        if (this.framesIndex % 100 === 0 && this.framesIndex !== 0) {
+        if (this.framesIndex % 1000 === 0 && this.framesIndex !== 0) {
             this.nextLevel()
-            this.enemyGenerateSpeed /= 5
+            this.enemyGenerateSpeed /= 4
         }
 
         this.shootBonusArr.forEach(bonus => bonus.draw());
@@ -216,14 +216,12 @@ const ironApp = {
     },
 
     playerClearBonusCollision() {
-        this.ctx.fillStyle = 'red'
         this.ctx.fillRect(0, 0, 500, 500)
         this.enemyArr.splice(0, this.enemyArr.length)
         this.clearBonusArr.splice(0, this.clearBonusArr.length)
     },
 
     playerShootBonusCollision() {
-        this.ctx.fillStyle = 'blue'
         this.ctx.fillRect(0, 0, 500, 500)
         this.canShoot = true
         this.shootBonusArr.splice(0, this.shootBonusArr.length)

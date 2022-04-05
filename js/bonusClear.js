@@ -8,7 +8,7 @@ class ClearBonus {
 
         this.init()
     }
-
+    
     init() {
         this.imageInstance = new Image()
         this.imageInstance.src = './img/lenin.png'
@@ -17,6 +17,4 @@ class ClearBonus {
     draw() {
         this.ctx.drawImage(this.imageInstance, this.clearBonusPos.x, this.clearBonusPos.y, this.clearBonusSize.w, this.clearBonusSize.h)
     }
-
-
 }

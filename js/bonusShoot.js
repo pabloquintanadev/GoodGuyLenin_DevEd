@@ -17,6 +17,4 @@ class ShootBonus {
     draw() {
         this.ctx.drawImage(this.imageInstance, this.shootBonusPos.x, this.shootBonusPos.y, this.shootBonusSize.w, this.shootBonusSize.h)
     }
-
-
 }
