@@ -31,7 +31,15 @@ const ironApp = {
         this.createPlayer()
         this.setEventListeners()
         this.gameStart()
+        this.displayCopyright()
 
+    },
+
+    displayCopyright() {
+        this.ctx.fillStyle = 'grey'
+        this.ctx.font = '11px arial'
+        this.ctx.fillText('Developed by:', 10, this.gameSize.h - 25)
+        this.ctx.fillText('Roberto Ezquerro & Pablo Quintana', 10, this.gameSize.h - 10)
     },
 
     setDimensions() {
@@ -83,6 +91,7 @@ const ironApp = {
             this.generateEnemy()
             this.generateShootBonus()
             this.generateClearBonus()
+            this.displayCopyright()
             this.framesIndex++
         }, 30);
     },
@@ -200,13 +209,13 @@ const ironApp = {
     },
 
     createPlayer() {
-        this.player = new Player(this.ctx, this.gameSize.w / 2 - 40, this.gameSize.h / 2 - 40, 80, 80)
+        this.player = new Player(this.ctx, this.gameSize.w / 2 - 40, this.gameSize.h / 2 - 40, 30, 75)
         this.player.draw()
     },
 
     generateEnemy() {
         if (this.framesIndex % this.enemyGenerateSpeed === 0) {
-            this.enemyArr.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 50, 50))
+            this.enemyArr.push(new Enemy(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, 100, 20, 45))
         }
     },
 
