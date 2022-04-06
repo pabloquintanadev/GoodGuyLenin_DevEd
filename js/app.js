@@ -1,5 +1,5 @@
 const ironApp = {
-    name: 'Good guy Lenin',
+    name: 'Good Guy Lenin',
     description: '{dev-edition}',
     version: '1.0.0',
     author: 'Pablo & Roberto',
@@ -75,7 +75,7 @@ const ironApp = {
     },
     start() {
         this.onPlaying = true
-        this.enemyGenerateSpeed = 10
+        this.enemyGenerateSpeed = 20
 
         this.interval = setInterval(() => {
             this.clearAll()
@@ -106,9 +106,9 @@ const ironApp = {
         this.player.draw()
         this.pointsCounter(this.framesIndex)
         this.displayNextLevelText()
-        if (this.framesIndex % 1000 === 0 && this.framesIndex !== 0) {
+        if (this.framesIndex % 300 === 0 && this.framesIndex !== 0) {
             this.nextLevel()
-            this.enemyGenerateSpeed /= 4
+            this.enemyGenerateSpeed / 2
         }
 
         this.shootBonusArr.forEach(bonus => bonus.draw());
@@ -220,19 +220,20 @@ const ironApp = {
     },
 
     generateShootBonus() {
-        if (this.framesIndex % 123 === 0) {
+        if (this.framesIndex % 501 === 0 && this.framesIndex !== 0) {
             this.shootBonusArr.push(new ShootBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 600) + 400))
         }
     },
     generateClearBonus() {
-        if (this.framesIndex % 201 === 0) {
+        if (this.framesIndex % 801 === 0 && this.framesIndex !== 0) {
             this.clearBonusArr.push(new ClearBonus(this.ctx, Math.random() * (this.gameSize.w - 550) + 250, Math.random() * (this.gameSize.h - 400) + 280))
         }
     },
 
     shoot() {
         if (this.canShoot) {
-
+            let shootMusic = new Audio("./sounds/Nice Shot (SOUND EFFECT).mp3")
+            shootMusic.play()
             this.bulletsArr.push(new Bullet(this.ctx, this.player.playerPos.x, this.player.playerPos.y, 50, 50))
         }
     },
